@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "TreeView - Select Node by Id";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <div class="container">
+        <h2>@ViewBag.Title</h2>
+        <p>
+            This sample demonstrates how to programatically select and highlight a specific node, by a given ID, in a databound treeview.
+        </p>
+        
+        <p>
+            <strong>Important stuff</strong>
+            <ul>
+                <li>Make sure you map the <code>id</code> property in your datasource's model</li>
+                <li>Make sure the treeview has loaded all items, before you fetch an item</li>
+            </ul>
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        
+        <div id="view">
+            
+            <div class="col-md-6">
+                <h3>Bound Treeview</h3>
+                <div id="treeview" class=""
+                     data-role="treeview"
+                     data-text-field="['text', 'productname']"
+                     data-bind="source: data, events: { select: onSelectProduct }">
+                </div>                
+            </div>
+
+            <div class="cold-md-6">
+                <h3>Test it</h3>
+                <p>Enter an ID here (between 1001 and 1006):</p>
+                <input type="number" min="1001" max="1006" data-bind="value: selectedId" />
+                <button class="btn btn-primary btn-sm" data-bind="events: { click: selectNode }">Select</button>                
+            </div>
+
+        </div>      
+
+    </div>
+</div>
+
+@section Page{
+    <script>
+        var dataSource = {};
+
+        $(function () {
+
+            // initialize a 'HierarchicalDataSource', using some dummy data
+            // do note that the main root nodes (e.g. categories) have different
+            // propertynames than the child items
+            dataSource = new kendo.data.HierarchicalDataSource({
+                data: [
+                    {
+                        text: "Furniture",
+                        products: [
+                            { productid: 1001, productname: "Tables & Chairs" },
+                            { productid: 1002, productname: "Sofas" },
+                            { productid: 1003, productname: "Occasional Furniture" }
+                        ]
+                    },
+                    {
+                        text: "Decor",
+                        products: [
+                            { productid: 1004, productname: "Bed Linen" },
+                            { productid: 1005, productname: "Curtains & Blinds" },
+                            { productid: 1006, productname: "Carpets" }
+                        ]
+                    }
+                ],
+
+                schema: {
+                    model: {
+                        // important: we need to map the 'id' property here
+                        // in order to fetch it later on
+                        id: "productid",
+
+                        // important: expand the treeview by default. if we
+                        // don't do this, the children won't be loaded at runtime
+                        // alternative would be to set 'loadOnDemand: false'
+                        expanded: true,
+                        
+                        children: "products"
+                    }
+                }
+            });
+
+            // initialize the viewmodel
+            var model = kendo.observable({
+
+                // set the datasource
+                data: dataSource,
+
+                // property that is bound to the input field
+                selectedId: 1001,
+
+                // the actual 'selectById' event
+                selectNode: function () {
+
+                    var id = this.selectedId;
+
+                    // identity the treeview
+                    var treeView = $("#treeview").data('kendoTreeView');
+
+                    // fetch the node through the datasource - not through the treeview, nor the viewmodel
+                    // we do this in order to get the 'uid', which is required to "query" the treeview
+                    var dataItem = dataSource.get(id);
+
+                    // now, we can find the specific node
+                    var node = treeView.findByUid(dataItem.uid);
+
+                    // finally, select the node in the treeview
+                    treeView.select(node);
+                }
+
+            });
+
+            kendo.bind($("#view"), model);
+        });
+    </script>
+}
