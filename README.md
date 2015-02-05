@@ -7,3 +7,9 @@ Kendo UI is a clientside framework and library of HTML5/Javascript UI controls, 
 awkwardness and mysterious design choices. 
 
 Instead of just complaining about stuff that "doesn't work" or whining about things "that don't make sense", we tried to come up with a more constructive approach with this repo. In it, we simply provide our own cookbook of common, reallife scenarios. 
+
+## Samples
+
+### TreeView
+
+* [Selecting a node, by ID](https://github.com/hanssens/recipes-for-kendo/blob/master/source/RecipesForKendo.Web/Views/TreeView/SelectById.cshtml)
