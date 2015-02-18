@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Drag and Drop Sample";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Index</h2>
+        <hr/>
+        
+        <p>
+            <small id="message">Drag something</small>
+        </p>
+
+        <div class="col-md-6">
+            <h3>List of People</h3>
+            <ul id="list-of-people">
+                <li data-id="Harry" class="draggable">Harry</li>
+                <li data-id="Barry" class="draggable">Barry</li>
+                <li data-id="Larry" class="draggable">Larry</li>
+                <li data-id="Jerry" class="draggable">Jerry</li>
+            </ul>
+        </div>
+        
+        <div class="col-md-6">
+            <h3>List of Emotions</h3>
+            <ul id="list-of-emotions">
+                <li data-id="Angry" class="droppable">Angry</li>
+                <li data-id="Happy" class="droppable">Happy</li>
+                <li data-id="Sad" class="droppable">Sad</li>
+            </ul>
+        </div>
+
+    </div>
+    
+    <style scoped>
+        
+        /*Arbitrary styles*/
+         #list-of-people, #list-of-emotions {
+             list-style: none;
+         }
+
+        #list-of-people li, #list-of-emotions li{
+            border: 1px solid #e2e2e2;
+            margin: 5px;
+        }
+
+        #list-of-people li {
+            cursor: pointer;
+        }
+
+        #list-of-emotions li {
+            border: 1px solid #e2e2e2;
+        }
+
+        /*Event styles*/
+                /*.draggable {
+                    cursor: move;
+                    position: absolute;
+                    top: 113px;
+                    left:100px;
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 50%;
+                    background-color: #03a9f4;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
+                }*/
+                .painted {
+                    background-color: #03a9f4;
+                    color: #fff;
+                }
+                
+                .draggable.hollow
+                {
+                    cursor: default;
+                    background: #ececec;
+                }
+                
+                /*.droppable
+                {
+                    height: 200px;
+                    width: 200px;
+                    font-size: 14px;
+                    border-radius: 50%;
+                    text-align: center;
+                    line-height: 200px;
+                    margin: 0 0 0 250px;
+                    cursor: default;
+                    border: 1px solid #999;
+                }*/
+
+    </style>
+</div>
+
+
+@section Page
+{
+    <script>
+
+        function draggableOnDragStart(e) {
+            console.log("dragstart");
+
+            // whenever we start dragging an element, we need
+            // to give it 'a colour' (some styling) to make it
+            // appealing to the user
+
+            $(e.currentTarget).addClass("hollow");
+
+            //$(".draggable").addClass("hollow");
+            //$(".droptarget").text("Drop here.");
+            //$(".droptarget").removeClass("painted");
+        }
+
+        function draggableOnDrag(e) {
+            console.log("Dragging now...");
+        }
+
+        function draggableOnCancel(e) {
+            console.log("You cancelled dragging");
+        }
+
+        function draggableOnDragEnd(e) {
+
+            // whenever the drag finishes, e.g. the 'drag end' event occurred,
+            // we'll fetch the data-id from the appropriate source:
+            var dataIdFromSource = $(e.currentTarget).data("id");
+            console.log("You stopped dragging " + dataIdFromSource + " around the page");
+
+            var draggable = $(".draggable");
+
+            // always remove the styling
+            draggable.removeClass("hollow");
+        }
+
+        function droptargetOnDragEnter(e) {
+            console.log("Ow, you're entering a 'dropzone'");
+            //$(".droptarget").text("Now drop...");
+            //$(".droptarget").addClass("painted");
+        }
+
+        function droptargetOnDragLeave(e) {
+            console.log("dragleave");
+
+            $("#droptarget").text("Drop here.");
+            $("#droptarget").removeClass("painted");
+        }
+
+        function droptargetOnDrop(e) {
+            console.log("drop");
+            console.log(e);
+
+            // a drop has been made, in the correct place!
+            // now, for brevity, let's identify source and target
+            var source = e.draggable.currentTarget;
+            var target = e.dropTarget;
+
+            // ... and fetch their appropriate values
+            var sourceDataId = $(source).data("id");
+            var targetDataId = $(target).data("id");
+
+            // and finally, do something with the results.
+            // in this case, output it to the user
+            var message = "You think " + sourceDataId + " is very " + targetDataId;
+            $("#message").html = message;
+
+            console.log(message);
+
+            // finally, remove all styling
+            $(".draggable").removeClass("hollow");
+        }
+
+        $(function() {
+            $(".draggable").kendoDraggable({
+                hint: function () {
+                    return $("#draggable").clone();
+                },
+                dragstart: draggableOnDragStart,
+                drag: draggableOnDrag,
+                dragend: draggableOnDragEnd,
+                dragcancel: draggableOnCancel
+            });
+
+            $(".droppable").kendoDropTarget({
+                dragenter: droptargetOnDragEnter,
+                dragleave: droptargetOnDragLeave,
+                drop: droptargetOnDrop
+            });
+        });
+    </script>
+}

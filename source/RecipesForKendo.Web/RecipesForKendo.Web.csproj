@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
+    <Compile Include="Controllers\DragAndDropController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TreeViewController.cs" />
     <Compile Include="Global.asax.cs">
@@ -102,6 +103,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Areas\Api\Views\web.config" />
     <Content Include="Views\TreeView\SelectById.cshtml" />
+    <Content Include="Views\DragAndDrop\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
